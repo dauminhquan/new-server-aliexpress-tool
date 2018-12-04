@@ -12,5 +12,9 @@
 */
 
 Route::get('/', function () {
-    return view('home');
+    return view('products');
 });
+Route::resource('products','ProductController');
+Route::resource('templates','TemplateController');
+Route::get('/product/update-info',["uses" => "ProductController@update_multiple_product","as" => "update-info"]);
+Route::post('/product/update-info',["uses" => "ProductController@post_update_multiple_product","as" => "update-info"]);
