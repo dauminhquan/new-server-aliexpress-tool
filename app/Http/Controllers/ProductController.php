@@ -142,6 +142,8 @@ class ProductController extends Controller
         {
             $ids = $request->ids;
             $columns = Schema::getColumnListing('products');
+            unset($columns["created_at"]);
+            unset($columns["updated_at"]);
             $column_selected = ["item_name"];
             if($request->column_selected != null)
             {
@@ -157,7 +159,7 @@ class ProductController extends Controller
         {
             $columns = Schema::getColumnListing('products');
             $profile = [];
-            $profileRequest = $request->all();
+            $profileRequest = array_keys($request->all());
             foreach ($profileRequest as $item)
             {
                 if(in_array($item,$columns))
@@ -165,14 +167,23 @@ class ProductController extends Controller
                     $profile[] = $item;
                 }
             }
+
             $ids = explode(",",$request->ids);
             foreach ($ids as $id)
             {
                 $product = Product::findOrFail($id);
+
                 foreach ($profile as $item)
                 {
-                    $profile->$item = $request->$item;
+                   try{
+                       $product->$item = $request->input($item);
+                   }catch (\Exception $exception)
+                   {
+                       dd($item);
+
+                   }
                 }
+
                 $product->save();
             }
             return back()->withErrors(['Thành công']);

@@ -27,6 +27,7 @@
                                         @if($column !="id")
                                             <option value="{{$column}}" @if(in_array($column,$column_selected)) selected @endif>{{$column}}</option>
                                         @endif
+
                                     @endforeach
                                 </select>
                             </div>
@@ -72,24 +73,10 @@
                     </div>
                 </div>
                 <div class="panel-body">
-
-                        <fieldset class="content-group">
-                            <p>Đã chọn <span class="text-danger" id="length_product_selected">0</span> sản phẩm</p>
-                            <div class="form-group">
-                                <label class="control-label col-lg-2">Chọn thao tác <span class="text-danger">*</span></label>
-                                <div class="col-lg-10">
-                                    <select id="select_action" name="action" style="width: 100%" class="select">
-                                        <option value="delete">Xóa các mục đã chọn</option>
-                                        <option value="update">Sửa thông tin các sản phẩm</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </fieldset>
                         @csrf
                         <div class="text-right">
-                            <button type="submit" class="btn btn-primary">Thực hiện <i class="icon-arrow-right14 position-right"></i></button>
+                            <button type="submit" class="btn btn-primary">Thêm các mục đã chọn vào template <i class="icon-arrow-right14 position-right"></i></button>
                         </div>
-
                 </div>
             </div>
             <div class="panel-body">

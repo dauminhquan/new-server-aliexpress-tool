@@ -2,9 +2,6 @@
 @section('body')
     <!-- Bordered panel body table -->
     <div class="panel panel-flat" id="app">
-        @if($errors->any())
-            <h4>{{$errors->first()}}</h4>
-        @endif
         <div class="panel panel-flat">
             <div class="panel-heading">
                 <div class="heading-elements">
@@ -64,4 +61,9 @@
     <script type="text/javascript" src="/assets/js/core/libraries/jquery_ui/interactions.min.js"></script>
     <script type="text/javascript" src="/assets/js/plugins/forms/selects/select2.min.js"></script>
     <script type="text/javascript" src="/assets/js/pages/form_select2.js"></script>
+    @if($errors->any())
+        <script type="text/javascript">
+            alert("{{$errors->first()}}")
+        </script>
+    @endif
 @endsection
