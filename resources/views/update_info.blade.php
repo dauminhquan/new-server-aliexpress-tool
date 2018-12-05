@@ -49,6 +49,7 @@
                 </fieldset>
                 @csrf
                 <div class="text-right">
+                    <input type="checkbox" name="change_child"> Sửa cả những sản phẩm con
                     <button type="submit" class="btn btn-primary">Update thông tin <i class="icon-arrow-right14 position-right"></i></button>
                 </div>
             </div>

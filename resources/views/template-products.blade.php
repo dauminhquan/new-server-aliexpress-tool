@@ -54,6 +54,10 @@
                                         <input type="radio" @if($request->exported == null || $request->exported == "on_off")  checked @endif value="on_off" name="exported">
                                         Chưa xuất và đã xuất
                                     </label>
+                                    <label class="radio-inline">
+                                        <input type="checkbox" @if($request->show_parent)  checked @endif name="show_parent">
+                                        Chỉ hiển thị các sản phẩm cha
+                                    </label>
                                 </div>
                             </div>
                         </fieldset>
@@ -82,14 +86,23 @@
                                 <label class="control-label col-lg-2">Chọn thao tác <span class="text-danger">*</span></label>
                                 <div class="col-lg-10">
                                     <select id="select_action" name="action" style="width: 100%" class="select">
+                                        <option>Chọn 1 mục</option>
                                         <option value="export-excel">Xuất Excel các mục đã chọn</option>
                                         <option value="delete">Xóa các mục đã chọn</option>
                                         <option value="reset_export">Chuyển các mục đã xuất thành chưa xuất</option>
                                         <option value="add_product">Thêm sản phẩm vào template</option>
                                     </select>
-                                    <div>
+                                    <div id="export_all" style="display: none">
                                         <input type="checkbox" name="export_all"> <span>Xuất tất cả</span>
                                     </div>
+                                    <div id="delete_child" style="display: none">
+                                        <input type="checkbox" name="delete_child"> <span>Xóa cả các biến thể</span>
+                                    </div>
+                                    <div id="reset_export_all" style="display: none">
+                                        <input type="checkbox" name="reset_export_all"> <span>Chuyển cả các biến thể</span>
+                                    </div>
+
+
                                 </div>
                             </div>
                         </fieldset>
@@ -170,6 +183,39 @@
                 else{
                     $('#select-all').prop('checked',true)
                 }
+            })
+            $("#select_action").change(function(){
+                if($(this).val() == "delete")
+                {
+                    $("#delete_child").show()
+                    $("#delete_child input").prop('checked',true)
+                }
+                else{
+                    $("#delete_child").hide()
+                    $("#delete_child input").prop('checked',false)
+                }
+
+                if($(this).val() == "export-excel")
+                {
+                    $("#export_all").show()
+                    $("#export_all input").prop('checked',true)
+                }
+                else{
+                    $("#export_all").hide()
+                    $("#export_all input").prop('checked',false)
+                }
+
+                if($(this).val() == "reset_export")
+                {
+                    $("#reset_export_all").show()
+                    $("#reset_export_all input").prop('checked',true)
+                }
+                else{
+                    $("#reset_export_all").hide()
+                    $("#reset_export_all input").prop('checked',false)
+                }
+
+
             })
         })
     </script>

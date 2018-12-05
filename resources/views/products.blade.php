@@ -29,7 +29,9 @@
                                         @endif
                                     @endforeach
                                 </select>
+                                <div><input type="checkbox" @if($request->has('show_parent')) checked @endif name="show_parent"> Chỉ hiển thị sản phẩm cha - Không hiển thị biến thể</div>
                             </div>
+
                         </div>
                         <div class="form-group">
                             <label class="control-label col-lg-2">Số sản phẩm mỗi trang</label>
@@ -60,12 +62,15 @@
                             <div class="form-group">
                                 <label class="control-label col-lg-2">Chọn thao tác <span class="text-danger">*</span></label>
                                 <div class="col-lg-10">
-                                    <select id="select_action" name="action" style="width: 100%" class="select">
+                                    <select id="select_action" required name="action" style="width: 100%" class="select">
+                                        <option>Chọn 1 mục</option>
                                         <option value="delete">Xóa các mục đã chọn</option>
                                         <option value="update">Sửa thông tin các sản phẩm</option>
                                     </select>
+                                    <div style="display: none" id="delete_child"><input type="checkbox" name="delete_child"  checked> Xóa cả biến thể</div>
                                 </div>
                             </div>
+
                         </fieldset>
                         @csrf
                         <div class="text-right">
@@ -143,6 +148,17 @@
                 }
                 else{
                     $('#select-all').prop('checked',true)
+                }
+            })
+            $("#select_action").change(function(){
+                if($(this).val() == "delete")
+                {
+                    $("#delete_child").show()
+                    $("#delete_child input").prop('checked',true)
+                }
+                else{
+                    $("#delete_child").hide()
+                    $("#delete_child input").prop('checked',false)
                 }
             })
         })

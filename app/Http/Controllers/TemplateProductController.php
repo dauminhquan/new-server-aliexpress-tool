@@ -41,6 +41,10 @@ class TemplateProductController extends Controller
                 $products->where('exported',"=",false);
             }
         }
+        if($request->has('show_parent'))
+        {
+            $products->whereNull('parent_sku');
+        }
         $products->select($default);
         if($request->limit == null)
         {
@@ -57,7 +61,7 @@ class TemplateProductController extends Controller
     {
 
         switch ($request->action){
-            case "export-excel": {
+                case "export-excel": {
                 return $this->exportExcel($request,$id);
             }
             case "delete": {
@@ -71,6 +75,41 @@ class TemplateProductController extends Controller
                     }
                 });
                 $delete->delete();
+                if($request->has('delete_child'))
+                {
+                    $delete = DB::table($template->table_name);
+                    $delete->where(function ($query) use ( $ids){
+                        foreach ($ids as $item_sku)
+                        {
+                            $query->orWhere('parent_sku',"=",$item_sku);
+                        }
+                    });
+                    $delete->delete();
+                }
+                return back();
+            }
+            case "reset_export" : {
+                $template = Template::findOrFail($id);
+                $ids = $request->id_selected;
+                $update = DB::table($template->table_name);
+                $update->where(function ($query) use ( $ids){
+                    foreach ($ids as $item_sku)
+                    {
+                        $query->orWhere('item_sku',"=",$item_sku);
+                    }
+                });
+                $update->update(["exported" => 0]);
+                if($request->has('reset_export_all'))
+                {
+                    $update = DB::table($template->table_name);
+                    $update->where(function ($query) use ( $ids){
+                        foreach ($ids as $item_sku)
+                        {
+                            $query->orWhere('parent_sku',"=",$item_sku);
+                        }
+                    });
+                    $update->update(["exported" => 0]);
+                }
                 return back();
             }
             case "add_product" : {
@@ -98,6 +137,10 @@ class TemplateProductController extends Controller
         if(!in_array('id',$default))
         {
             $default = array_merge(['id'],$default);
+        }
+        if($request->has('show_parent'))
+        {
+            $products->whereNull('parent_sku');
         }
         $products->select($default);
         $products->orderBy('id','asc');
@@ -141,6 +184,26 @@ class TemplateProductController extends Controller
             Product::where("id","=",$product->id)->delete();
         }
 
+        if($request->has('select_all_product'))
+        {
+            foreach ($products as $product)
+            {
+                $products_child = DB::table('products')->where('parent_sku',"=",$product->item_sku)->get();
+                foreach ($products_child as $value)
+                {
+                    $item = [];
+                    foreach ($sorts as $sort)
+                    {
+                        if(isset($value->$sort))
+                        {
+                            $item[$sort] = $value->$sort;
+                        }
+                    }
+                    DB::table($template->table_name)->insert($item);
+                    Product::where("id","=",$value->id)->delete();
+                }
+            }
+        }
 //        DB::table($template->table_name)->insert($inserts);
         return back()->withErrors(["Thêm vào thành công"]);
     }

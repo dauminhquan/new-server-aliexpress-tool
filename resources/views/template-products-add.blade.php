@@ -54,6 +54,10 @@
                                     <input type="radio" @if($request->exported == null || $request->exported == "on_off") value="on_off" checked @endif name="exported">
                                     Chưa xuất và đã xuất
                                 </label>
+                                <label class="radio-inline">
+                                    <input id="show_parent" type="checkbox" @if($request->has('show_parent')) checked @endif name="show_parent">
+                                    Chỉ hiển thị sản phẩm cha
+                                </label>
                             </div>
                         </div>
                     </fieldset>
@@ -75,6 +79,8 @@
                 <div class="panel-body">
                         @csrf
                         <div class="text-right">
+                            <span id="select_all_product" @if(!$request->has('show_parent')) style="display: none;" @endif > <input type="checkbox" @if($request->has('show_parent')) checked @endif  name="select_all_product"> Thêm cả sản phẩm con</span>
+
                             <button type="submit" class="btn btn-primary">Thêm các mục đã chọn vào template <i class="icon-arrow-right14 position-right"></i></button>
                         </div>
                 </div>
@@ -148,6 +154,16 @@
                 }
                 else{
                     $('#select-all').prop('checked',true)
+                }
+            })
+            $('#show_parent').change(function () {
+                if($(this).prop("checked"))
+                {
+                    $("#select_all_product").show()
+                }
+                else{
+                    $('#select_all_product input').prop('checked', false);
+                    $("#select_all_product").hide()
                 }
             })
         })

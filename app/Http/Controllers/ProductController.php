@@ -30,6 +30,10 @@ class ProductController extends Controller
                 $products->orWhere(DB::raw('LOWER('.$column.')'),'LIKE','%'.strtolower($request->search).'%');
             }
         }
+        if($request->has('show_parent'))
+        {
+            $products->whereNull('parent_sku');
+        }
         if(!in_array('id',$default))
         {
             $default = array_merge(['id'],$default);
@@ -66,7 +70,7 @@ class ProductController extends Controller
     {
         if($request->action == 'delete')
         {
-            $this->delete_multiple_product($request->id_selected);
+            $this->delete_multiple_product($request);
         }
         if($request->action == 'update')
         {
@@ -121,17 +125,22 @@ class ProductController extends Controller
     }
 
 
-    private function delete_multiple_product($ids)
+    private function delete_multiple_product($request)
     {
-
+        $ids = $request->id_selected;
         if($ids != null)
         {
             if(count($ids) > 0)
             {
                 foreach ($ids as $id)
                 {
+
                     $product = Product::findOrFail($id);
                     $product->delete();
+                    if($request->has('delete_child'))
+                    {
+                        DB::table('products')->where('parent_sku','=',$product->item_sku)->delete();
+                    }
                 }
             }
         }
@@ -172,19 +181,22 @@ class ProductController extends Controller
             foreach ($ids as $id)
             {
                 $product = Product::findOrFail($id);
-
+                $update_child = [];
                 foreach ($profile as $item)
                 {
                    try{
                        $product->$item = $request->input($item);
+                       $update_child[$item] = $request->input($item);
                    }catch (\Exception $exception)
                    {
                        dd($item);
-
                    }
                 }
-
                 $product->save();
+                if($request->has('change_child'))
+                {
+                    DB::table('products')->where('parent_sku',"=",$product->item_sku)->update($update_child);
+                }
             }
             return back()->withErrors(['Thành công']);
         }
