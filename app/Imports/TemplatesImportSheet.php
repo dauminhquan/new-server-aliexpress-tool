@@ -6,12 +6,11 @@ use App\Template;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
-use Maatwebsite\Excel\Concerns\WithMultipleSheets;
-class TemplateImport implements WithMultipleSheets
+use Maatwebsite\Excel\Concerns\ToCollection;
+
+class TemplatesImportSheet implements ToCollection
 {
-    /**
-    * @param Collection $collection
-    */
+
     public $name_template = null;
     public function __construct($name_template,$id_template)
     {
@@ -19,17 +18,22 @@ class TemplateImport implements WithMultipleSheets
         $this->id_template = $id_template;
     }
 
-    /*public function collection(Collection $collection)
+    public function collection(Collection $collection)
     {
         $columns = [];
+        $defaults = [];
         foreach ($collection as $key => $item )
         {
             if($key == 2)
             {
                 $columns = $item;
-                break;
+            }
+            if($key == 3)
+            {
+                $defaults = $item;
             }
         }
+
         $template = Template::findOrFail($this->id_template);
         $sort = [];
         foreach ($columns as $column)
@@ -38,12 +42,15 @@ class TemplateImport implements WithMultipleSheets
         }
         $template->sort = implode(";",$sort);
         $template->update();
-        Schema::create($this->name_template, function (Blueprint $table) use ($columns) {
-            foreach ($columns as $column)
+        Schema::create($this->name_template, function (Blueprint $table) use ($columns,$defaults) {
+            foreach ($columns as $index => $column)
             {
                 if($column == "item_sku")
                 {
                     $table->string("item_sku",40)->primary();
+                }
+                else if($defaults[$index] != null && $defaults[$index] != ""){
+                    $table->string($column)->default($defaults[$index]);
                 }
                 else{
                     $table->text($column)->nullable();
@@ -51,17 +58,5 @@ class TemplateImport implements WithMultipleSheets
             }
             $table->boolean("exported")->default(false);
         });
-
-    }*/
-
-    /**
-     * @return array
-     */
-    public function sheets(): array
-    {
-        return [
-
-            "Template" => new TemplatesImportSheet($this->name_template,$this->id_template),
-        ];
     }
 }

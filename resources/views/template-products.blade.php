@@ -83,7 +83,7 @@
                                 <label class="control-label col-lg-2">Chọn thao tác <span class="text-danger">*</span></label>
                                 <div class="col-lg-10">
                                     <select id="select_action" name="action" style="width: 100%" class="select">
-                                        <option value="export_excel">Xuất Excel các mục đã chọn</option>
+                                        <option value="export-excel">Xuất Excel các mục đã chọn</option>
                                         <option value="delete">Xóa các mục đã chọn</option>
                                         <option value="reset_export">Chuyển các mục đã xuất thành chưa xuất</option>
                                         <option value="add_product">Thêm sản phẩm vào template</option>

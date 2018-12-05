@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TemplatesExport;
 use App\Product;
 use App\Template;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TemplateProductController extends Controller
 {
@@ -55,8 +57,24 @@ class TemplateProductController extends Controller
     {
 
         switch ($request->action){
-            case "add_product": {
-                return response()->redirectToRoute('template-products.add_product',['id' => $id]);
+            case "export-excel": {
+                return $this->exportExcel($request,$id);
+            }
+            case "delete": {
+                $template = Template::findOrFail($id);
+                $ids = $request->id_selected;
+                $delete = DB::table($template->table_name);
+                $delete->where(function ($query) use ( $ids){
+                    foreach ($ids as $item_sku)
+                    {
+                        $query->orWhere('item_sku',"=",$item_sku);
+                    }
+                });
+                $delete->delete();
+                return back();
+            }
+            case "add_product" : {
+                return response()->redirectToRoute('template-products.add_product',["id" => $id]);
             }
         }
     }
@@ -120,10 +138,20 @@ class TemplateProductController extends Controller
                 }
             }
             DB::table($template->table_name)->insert($item);
-            $products->delete();
+            Product::where("id","=",$product->id)->delete();
         }
 
 //        DB::table($template->table_name)->insert($inserts);
         return back()->withErrors(["Thêm vào thành công"]);
+    }
+    private function exportExcel(Request $request,$id)
+    {
+        $ids = $request->id_selected;
+        if($ids == null)
+        {
+            return back()->withErrors(["Vui lòng chọn 1 sản phẩm"]);
+        }
+        $template = Template::findOrFail($id);
+        return Excel::download(new TemplatesExport($template->table_name,$ids), 'users.xlsx');
     }
 }

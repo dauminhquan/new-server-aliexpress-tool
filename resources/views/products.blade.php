@@ -37,24 +37,6 @@
                                 <input type="number" min="1" step="1" required name="limit" @if($request->limit != null) value="{{$request->limit}}" @else value="10" @endif class="form-control" placeholder="Điền số sản phẩm mỗi trang">
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label col-lg-2">Tình trạng</label>
-                            <div class="col-lg-10">
-                                <label class="radio-inline">
-                                    <input type="radio" value="on" name="exported" @if($request->exported == "on") checked @endif required="required" aria-required="true">
-                                    Đã xuất
-                                </label>
-
-                                <label class="radio-inline">
-                                    <input type="radio" value="off" @if($request->exported == "off") checked @endif name="exported">
-                                    Chưa xuất
-                                </label>
-                                <label class="radio-inline">
-                                    <input type="radio" @if($request->exported == null || $request->exported == "on_off") value="on_off" checked @endif name="exported">
-                                    Chưa xuất và đã xuất
-                                </label>
-                            </div>
-                        </div>
                     </fieldset>
                     <div class="text-right">
                         <button type="submit" class="btn btn-primary">Tìm kiếm <i class="icon-arrow-right14 position-right"></i></button>

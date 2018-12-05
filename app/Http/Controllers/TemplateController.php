@@ -115,6 +115,7 @@ class TemplateController extends Controller
     {
         $template = Template::findOrFail($id);
         $template->delete();
+        Schema::dropIfExists($template->table_name);
         return response()->redirectToRoute('templates.index')->withErrors(['Xóa thành công']);
     }
 }
