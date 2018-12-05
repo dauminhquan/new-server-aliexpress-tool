@@ -37,18 +37,32 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        $data = $request->data;
         $columns = Schema::getColumnListing('products');
-        $product = new Product();
-        foreach ($columns as $index => $column)
+        $accept = 0;
+        $reject = 0;
+        foreach ($data as $item)
         {
-
-            if($request->has($column))
+            if(Product::where("item_sku","=",$item["item_sku"])->first() == null)
             {
-                $product->$column = $request->$column;
+                $product = new Product();
+                foreach ($columns as $index => $column)
+                {
+                    if(isset($item[$column]))
+                    {
+                        $product->$column = $item[$column];
+                    }
+                }
+                $product->save();
+                $accept++;
+            }else{
+                $reject++;
             }
         }
-        $product->save();
-        return $product;
+        return [
+            "accept" => $accept,
+            "reject" => $reject
+        ];
     }
 
     /**

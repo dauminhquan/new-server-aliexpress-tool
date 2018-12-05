@@ -5,6 +5,7 @@ namespace App\Imports;
 use App\Template;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Maatwebsite\Excel\Concerns\ToCollection;
 
@@ -22,8 +23,18 @@ class TemplatesImportSheet implements ToCollection
     {
         $columns = [];
         $defaults = [];
+        $row1 = [];
+        $row0 = [];
         foreach ($collection as $key => $item )
         {
+            if($key == 0)
+            {
+                $row0 = $item;
+            }
+            if($key == 1)
+            {
+                $row1 = $item;
+            }
             if($key == 2)
             {
                 $columns = $item;
@@ -47,16 +58,47 @@ class TemplatesImportSheet implements ToCollection
             {
                 if($column == "item_sku")
                 {
-                    $table->string("item_sku",40)->primary();
+                    $table->string($column,40)->primary();
+                }
+                else if($column == "fulfillment_latency")
+                {
+                    $table->string($column,40)->default("10")->nullable();
+                }
+                else if($column == "condition_type")
+                {
+                    $table->string($column,40)->default("New")->nullable();
+                }
+                else if($column == "external_product_id_type")
+                {
+                    $table->string($column,40)->default("UPC")->nullable();
+                }
+                else if($column == "quantity")
+                {
+                    $table->string($column,40)->default("10")->nullable();
                 }
                 else if($defaults[$index] != null && $defaults[$index] != ""){
-                    $table->string($column)->default($defaults[$index]);
+                    $table->string($column)->default($defaults[$index])->nullable();
                 }
                 else{
                     $table->text($column)->nullable();
                 }
             }
-            $table->boolean("exported")->default(false);
+            $table->integer("exported")->default(0);
         });
+        $insert0 = [];
+        $insert1 = [];
+        $insert2 = [];
+        foreach ($columns as $index => $column)
+        {
+            $insert0[$column] = $row0[$index];
+            $insert1[$column] = $row1[$index];
+            $insert2[$column] = $column;
+        }
+        $insert0["exported"] = -3;
+        $insert1["exported"] = -2;
+        $insert2["exported"] = -1;
+        DB::table($this->name_template)->insert($insert0);
+        DB::table($this->name_template)->insert($insert1);
+        DB::table($this->name_template)->insert($insert2);
     }
 }

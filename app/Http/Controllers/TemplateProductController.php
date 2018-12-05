@@ -22,7 +22,7 @@ class TemplateProductController extends Controller
             $default  = $request->column_selected;
         }
         $columns = Schema::getColumnListing($template->table_name);
-        $products = DB::table($template->table_name);
+        $products = DB::table($template->table_name)->where('exported',"<>",-3)->where('exported',"<>",-2)->where('exported',"<>",-1);
         if($request->search != null)
         {
             foreach ($columns as $column)
@@ -146,12 +146,17 @@ class TemplateProductController extends Controller
     }
     private function exportExcel(Request $request,$id)
     {
+
+        $template = Template::findOrFail($id);
+        if($request->has('export_all'))
+        {
+            return Excel::download(new TemplatesExport($template->table_name,[],true), $template->name.'.xlsx');
+        }
         $ids = $request->id_selected;
         if($ids == null)
         {
             return back()->withErrors(["Vui lòng chọn 1 sản phẩm"]);
         }
-        $template = Template::findOrFail($id);
-        return Excel::download(new TemplatesExport($template->table_name,$ids), 'users.xlsx');
+        return Excel::download(new TemplatesExport($template->table_name,$ids), $template->name.'.xlsx');
     }
 }

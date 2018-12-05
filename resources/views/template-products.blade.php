@@ -28,7 +28,6 @@
                                             @if($column !="id")
                                                 <option value="{{$column}}" @if(in_array($column,$column_selected)) selected @endif>{{$column}}</option>
                                             @endif
-
                                         @endforeach
                                     </select>
                                 </div>
@@ -88,6 +87,9 @@
                                         <option value="reset_export">Chuyển các mục đã xuất thành chưa xuất</option>
                                         <option value="add_product">Thêm sản phẩm vào template</option>
                                     </select>
+                                    <div>
+                                        <input type="checkbox" name="export_all"> <span>Xuất tất cả</span>
+                                    </div>
                                 </div>
                             </div>
                         </fieldset>
