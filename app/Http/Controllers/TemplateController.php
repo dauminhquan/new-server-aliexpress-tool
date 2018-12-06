@@ -8,6 +8,7 @@ use App\Template;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
 class TemplateController extends Controller
@@ -58,9 +59,15 @@ class TemplateController extends Controller
         $template = new Template();
         $template->name = $request->name;
         $template->table_name = $request->table_name;
-        $template->file = $request->file('file')->store('templates');
+        $template->file = $request->file('file')->storeAs('templates',$request->table_name.'.xlsx');
         $template->save();
-        Excel::import(new TemplateImport($request->table_name,$template->id), $request->file("file"));
+       try{
+           Excel::import(new TemplateImport($request->table_name,$template->id), $request->file("file"));
+       }catch (\Exception $exception){
+           return response()->json([
+               'message' => "Template error"
+           ],406);
+       }
         return response()->redirectToRoute('templates.index')->withErrors(["Thêm mới thành công"]);
     }
 
@@ -115,6 +122,7 @@ class TemplateController extends Controller
     {
         $template = Template::findOrFail($id);
         $template->delete();
+        Storage::delete($template->file);
         Schema::dropIfExists($template->table_name);
         return response()->redirectToRoute('templates.index')->withErrors(['Xóa thành công']);
     }

@@ -17,7 +17,9 @@ class CreateKeywordsTable extends Migration
             $table->increments('id');
             $table->string('keyword')->unique();
             $table->integer('page')->default(1);
-            $table->boolean('done')->default('false');
+            $table->integer('status')->default(0);
+            $table->integer('server_id')->nullable();
+            $table->float('multiplication')->default(1.5);
             $table->timestamps();
         });
     }

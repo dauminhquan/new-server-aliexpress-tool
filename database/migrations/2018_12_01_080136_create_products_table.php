@@ -44,6 +44,7 @@ class CreateProductsTable extends Migration
             $table->text('color_map')->nullable();
             $table->text('size_name')->nullable();
             $table->text('size_map')->nullable();
+            $table->integer('keyword_id')->nullable();
             $table->timestamps();
         });
     }

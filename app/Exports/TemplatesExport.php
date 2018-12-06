@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Upc;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -44,6 +45,23 @@ class TemplatesExport implements FromCollection
             });
         }
         $data = $data->get();
+        $count = count($data);
+        $upcs = Upc::limit(count($data));
+        if(count($upcs) < $count)
+        {
+            dd("Khong du ma UPC");
+        }
+        else{
+            $delete = DB::table('upcs');
+            $delete->where(function($query) use (&$data,$upcs){
+                foreach ($data as $index => $item)
+                {
+                    $item->external_product_id = $upcs[$index]->key;
+                    $query->orWhere('id',"=",$upcs[$index]->id);
+                }
+            });
+            $delete->delete();
+        }
         $update->update(["exported" => 1]);
         return $data;
     }

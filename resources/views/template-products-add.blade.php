@@ -1,6 +1,35 @@
 @extends('layout')
 @section('body')
     <!-- Bordered panel body table -->
+    <div id="modal_add_product_from_keyword" class="modal fade" style="display: none;">
+        <div class="modal-dialog">
+            <form id="search-form" method="post">
+                <div class="modal-content">
+                    <div class="modal-header bg-info">
+                        <button type="button" class="close" data-dismiss="modal">×</button>
+                        <h6 class="modal-title"><span class="icon-search4"></span> Điền đầy đủ các thông tin</h6>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Hãy chọn 1 keyword </label>
+                            <select name="keyword_id" data-placeholder="Hãy chọn 1 keyword" class="select" required>
+                                @foreach($keywords as $keyword)
+                                    <option value="{{$keyword->id}}">{{$keyword->keyword}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+                        <input type="text" name="action" value="add_product_from_keyword" style="display: none">
+                        @csrf
+                        <button type="submit" class="btn btn-info">Thêm sản phẩm</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
     <div class="panel panel-flat" id="app" length-ids="{{count($products)}}">
         <div class="panel panel-flat">
             <div class="panel-heading">
@@ -80,7 +109,8 @@
                         @csrf
                         <div class="text-right">
                             <span id="select_all_product" @if(!$request->has('show_parent')) style="display: none;" @endif > <input type="checkbox" @if($request->has('show_parent')) checked @endif  name="select_all_product"> Thêm cả sản phẩm con</span>
-
+                            <button type="button" data-toggle="modal" data-target="#modal_add_product_from_keyword" class="btn btn-warning">Thêm sản phẩm bằng từ khóa <i class="icon-arrow-right14 position-right"></i></button>
+                            <input type="text" name="action" value="add_product_from_ids" style="display: none">
                             <button type="submit" class="btn btn-primary">Thêm các mục đã chọn vào template <i class="icon-arrow-right14 position-right"></i></button>
                         </div>
                 </div>

@@ -33,7 +33,7 @@
 <!-- Main navbar -->
 <div class="navbar navbar-inverse">
     <div class="navbar-header">
-        <a class="navbar-brand" href="#"><img src="/assets/images/logo_light.png" alt=""></a>
+        <a class="navbar-brand" href="#"><i class="icon-search4"></i> Amazon Team</a>
 
         <ul class="nav navbar-nav visible-xs-block">
             <li><a data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-tree5"></i></a></li>
@@ -177,7 +177,7 @@
                         <div class="media">
                             <a href="#" class="media-left"><img src="/assets/images/placeholder.jpg" class="img-circle img-sm" alt=""></a>
                             <div class="media-body">
-                                <span class="media-heading text-semibold">Victoria Baker</span>
+                                <span class="media-heading text-semibold">{{\Illuminate\Support\Facades\Auth::user()->name}}</span>
                             </div>
                         </div>
                     </div>
@@ -192,15 +192,17 @@
 
                             <!-- Main -->
                             <li class="navigation-header"><span>Main</span> <i class="icon-menu" title="Main pages"></i></li>
-                            <li><a href="#"><i class="icon-home4"></i> <span>Dashboard</span></a></li>
-                            <li><a href="#"><i class="icon-user"></i> <span>Quản lý nhân viên</span></a></li>
-                            <li><a href="#"><i class="icon-search4"></i> <span>Từ khóa - Tìm sản phẩm</span></a></li>
+                            <li><a href="{{route('home')}}"><i class="icon-home4"></i> <span>Dashboard</span></a></li>
+                            <li><a href="{{route('users.index')}}"><i class="icon-user"></i> <span>Quản lý nhân viên</span></a></li>
+                            <li><a href="{{route('keywords.index')}}"><i class="icon-search4"></i> <span>Từ khóa - Tìm sản phẩm</span></a></li>
                             <li><a href="{{route('products.index')}}"><i class="icon-box"></i> <span>Quản lý sản phẩm</span></a></li>
+                            <li><a href="{{route('upcs.index')}}"><i class="icon-wrench"></i> <span>Mã UPC</span></a></li>
                             <li><a href="{{route('templates.index')}}"><i class="icon-insert-template"></i> <span>Quản lý template - Xuất Excel</span></a></li>
                             <li>
                                 <a href="#"><i class="icon-copy"></i> <span>Develop</span></a>
                                 <ul>
                                     <li><a href="#" id="layout1">Quản lý các cột tại bảng</a></li>
+                                    <li><a href="{{route('servers.index')}}" id="layout1">Quản lý các server</a></li>
                                 </ul>
                             </li>
                         </ul>

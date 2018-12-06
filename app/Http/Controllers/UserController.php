@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UpcRequest;
-use App\Imports\UpcsImport;
-use App\Upc;
+use App\Imports\UsersImport;
+use App\User;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
-class UpcController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('upcs');
+        $users = User::get();
+        return view('users',['users' => $users]);
     }
 
     /**
@@ -27,7 +27,7 @@ class UpcController extends Controller
      */
     public function create()
     {
-
+        //
     }
 
     /**
@@ -36,9 +36,12 @@ class UpcController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(UpcRequest $request)
+    public function store(Request $request)
     {
-        Excel::import(new UpcsImport(), $request->file('file'));
+        if($request->hasFile('file'))
+        {
+            Excel::import(new UsersImport(), $request->file('file'));
+        }
         return back();
     }
 
@@ -84,6 +87,8 @@ class UpcController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = User::findOrFail($id);
+        $user->delete();
+        return back();
     }
 }

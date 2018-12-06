@@ -2,22 +2,39 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UpcRequest;
-use App\Imports\UpcsImport;
-use App\Upc;
+use App\Keyword;
+use App\Server;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
-class UpcController extends Controller
+class ServerController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('upcs');
+        $columns = Schema::getColumnListing('servers');
+        $servers = DB::table('servers');
+        if($request->search != null)
+        {
+            foreach ($columns as $column)
+            {
+                $servers->orWhere(DB::raw('LOWER('.$column.')'),'LIKE','%'.strtolower($request->search).'%');
+            }
+        }
+        $servers->orderBy('id','asc');
+        if($request->limit == null)
+        {
+            $servers = $servers->paginate(20);
+        }
+        else{
+            $servers = $servers->paginate($request->limit);
+        }
+        return view('servers',['servers' => $servers,'columns' => $columns,'request' => $request]);
     }
 
     /**
@@ -27,7 +44,7 @@ class UpcController extends Controller
      */
     public function create()
     {
-
+        //
     }
 
     /**
@@ -36,9 +53,12 @@ class UpcController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(UpcRequest $request)
+    public function store(Request $request)
     {
-        Excel::import(new UpcsImport(), $request->file('file'));
+        $server = new Server();
+        $server->name = $request->name;
+        $server->root_url = $request->root_url;
+        $server->save();
         return back();
     }
 
@@ -84,6 +104,13 @@ class UpcController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $server = Server::findOrFail($id);
+        $server->delete();
+        Keyword::where('server_id',"=",$server->id)->update([
+           "server_id" => null,
+           "status" => 3
+        ]);
+        return back();
     }
+
 }

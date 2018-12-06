@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\TemplatesExport;
+use App\Keyword;
 use App\Product;
 use App\Template;
 use Illuminate\Http\Request;
@@ -89,8 +90,14 @@ class TemplateProductController extends Controller
                 return back();
             }
             case "reset_export" : {
+
                 $template = Template::findOrFail($id);
                 $ids = $request->id_selected;
+
+                if($ids == null)
+                {
+                    return back()->withErrors(['Hãy chọn 1 san phẩm']);
+                }
                 $update = DB::table($template->table_name);
                 $update->where(function ($query) use ( $ids){
                     foreach ($ids as $item_sku)
@@ -120,6 +127,7 @@ class TemplateProductController extends Controller
 
     public function add_product(Request $request,$id){
         $template = Template::findOrFail($id);
+        $keywords = Keyword::get();
         $default = ['item_name', 'item_sku', 'main_image_url'];
         if ($request->column_selected != null)
         {
@@ -151,59 +159,85 @@ class TemplateProductController extends Controller
         else{
             $products = $products->paginate($request->limit);
         }
-        return view('template-products-add',['products' => $products,'columns' => $columns,'column_selected' => $default,'request' => $request]);
+        return view('template-products-add',['products' => $products,'columns' => $columns,'column_selected' => $default,'request' => $request,'keywords'=> $keywords]);
     }
     public function post_add_product(Request $request,$id)
     {
         $template = Template::findOrFail($id);
         $sorts = explode(';',$template->sort);
-//        $inserts = DB::table($template->table_name);
-        $ids = $request->id_selected;
-
-        $products = DB::table('products');
-        $products->where(function($query) use ($ids){
-            foreach ($ids as $item)
-            {
-                $query->orWhere("id","=",$item);
-            }
-        });
-        $products = $products->get();
-
-        foreach ($products as $product)
+        if($request->action == "add_product_from_keyword")
         {
-
-            $item = [];
-            foreach ($sorts as $sort)
-            {
-                if(isset($product->$sort))
-                {
-                    $item[$sort] = $product->$sort;
-                }
-            }
-            DB::table($template->table_name)->insert($item);
-            Product::where("id","=",$product->id)->delete();
-        }
-
-        if($request->has('select_all_product'))
-        {
+            $products = DB::table('products')->where('keyword_id','=',$request->keyword_id)->get();
             foreach ($products as $product)
             {
-                $products_child = DB::table('products')->where('parent_sku',"=",$product->item_sku)->get();
-                foreach ($products_child as $value)
+
+                $item = [];
+                foreach ($sorts as $sort)
                 {
-                    $item = [];
-                    foreach ($sorts as $sort)
+                    if(isset($product->$sort))
                     {
-                        if(isset($value->$sort))
-                        {
-                            $item[$sort] = $value->$sort;
-                        }
+                        $item[$sort] = $product->$sort;
                     }
-                    DB::table($template->table_name)->insert($item);
-                    Product::where("id","=",$value->id)->delete();
+                }
+                DB::table($template->table_name)->insert($item);
+                Product::where("id","=",$product->id)->delete();
+            }
+        }
+        if($request->action == "add_product_from_ids")
+        {
+
+//        $inserts = DB::table($template->table_name);
+            $ids = $request->id_selected;
+            if($ids == null)
+            {
+                return back()->withErrors(["Vui lòng chọn 1 sản phẩm"]);
+            }
+            $products = DB::table('products');
+            $products->where(function($query) use ($ids){
+                foreach ($ids as $item)
+                {
+                    $query->orWhere("id","=",$item);
+                }
+            });
+            $products = $products->get();
+
+            foreach ($products as $product)
+            {
+
+                $item = [];
+                foreach ($sorts as $sort)
+                {
+                    if(isset($product->$sort))
+                    {
+                        $item[$sort] = $product->$sort;
+                    }
+                }
+                DB::table($template->table_name)->insert($item);
+                Product::where("id","=",$product->id)->delete();
+            }
+
+            if($request->has('select_all_product'))
+            {
+                foreach ($products as $product)
+                {
+                    $products_child = DB::table('products')->where('parent_sku',"=",$product->item_sku)->get();
+                    foreach ($products_child as $value)
+                    {
+                        $item = [];
+                        foreach ($sorts as $sort)
+                        {
+                            if(isset($value->$sort))
+                            {
+                                $item[$sort] = $value->$sort;
+                            }
+                        }
+                        DB::table($template->table_name)->insert($item);
+                        Product::where("id","=",$value->id)->delete();
+                    }
                 }
             }
         }
+
 //        DB::table($template->table_name)->insert($inserts);
         return back()->withErrors(["Thêm vào thành công"]);
     }

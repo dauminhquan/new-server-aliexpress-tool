@@ -2,10 +2,10 @@
 
 namespace App\Imports;
 
-use App\Upc;
+use App\Keyword;
 use Maatwebsite\Excel\Concerns\ToModel;
 
-class UpcsImport implements ToModel
+class KeywordsImport implements ToModel
 {
     /**
     * @param array $row
@@ -14,8 +14,8 @@ class UpcsImport implements ToModel
     */
     public function model(array $row)
     {
-        return new Upc([
-            "key" => $row[0]
+        return new Keyword([
+            "keyword" => $row[0]
         ]);
     }
 }

@@ -15,6 +15,7 @@ class CreateUpcsTable extends Migration
     {
         Schema::create('upcs', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('key')->unique();
             $table->timestamps();
         });
     }
