@@ -12,7 +12,7 @@
                         <div class="form-group">
                             <label>File Excel(.xlsx)</label>
                             <input type="file" name="file" required accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" class="form-control">
-                            <p>Vị trí trong file excel lân lượt phải là: <span class="text-warning">Tên nhân viên - Email - Mật khẩu - Loại tài khoản</span> ( 0 - Quản trị viên, 1 - Nhân viên tìm kiếm, 2 - Nhân viên Xuất Excel )</p>
+                            <p>Vị trí trong file excel lân lượt phải là: <span class="text-warning">Tên nhân viên - Email - Mật khẩu - Loại tài khoản</span> ( 1 - Quản trị viên, 2 - Nhân viên tìm kiếm, 3 - Nhân viên Xuất Excel )</p>
                         </div>
 
                     </div>
