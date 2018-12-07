@@ -40,7 +40,7 @@ class ProductController extends Controller
         $data = $request->data;
         $columns = Schema::getColumnListing('products');
         $accept = 0;
-        $reject = 0;
+        $update = 0;
         foreach ($data as $item)
         {
             if(Product::where("item_sku","=",$item["item_sku"])->first() == null)
@@ -56,12 +56,21 @@ class ProductController extends Controller
                 $product->save();
                 $accept++;
             }else{
-                $reject++;
+                $product = Product::where("item_sku","=",$item["item_sku"])->first();
+                foreach ($columns as $index => $column)
+                {
+                    if(isset($item[$column]))
+                    {
+                        $product->$column = $item[$column];
+                    }
+                }
+                $product->save();
+                $update++;
             }
         }
         return [
             "accept" => $accept,
-            "reject" => $reject
+            "updated" => $update
         ];
     }
 

@@ -51,7 +51,7 @@ class TemplatesExport implements FromCollection
         $count = 0;
         foreach ($data as $item)
         {
-            if($item->parent_sku == null || $item->parent_sku == "")
+            if(($item->parent_sku == null || $item->parent_sku == "") && ($item->standard_price != null && $item->standard_price != ""))
             {
                 $count++;
             }
@@ -63,17 +63,21 @@ class TemplatesExport implements FromCollection
         }
         else{
             $delete = DB::table('upcs');
-            $delete->where(function($query) use (&$data,$upcs){
+            $indexUpc = 0;
+            $delete->where(function($query) use (&$data,$upcs,&$indexUpc){
                 foreach ($data as $index => $item)
                 {
-                    if(!$item->parent_sku == null && !$item->parent_sku =="" && $item->exported > -1)
+
+                    if(!$item->parent_sku == null && !$item->parent_sku =="" && $item->exported > -1 && ($item->parent_child == null || $item->parent_child != ""))
                     {
-                        $item->external_product_id = $upcs[$index]->key;
+                        $item->external_product_id = $upcs[$indexUpc]->key;
+                        $query->orWhere('id',"=",$upcs[$indexUpc]->id);
+                        $indexUpc++;
                     }
-                    $query->orWhere('id',"=",$upcs[$index]->id);
                     unset($item->exported);
                 }
             });
+
             $delete->delete();
         }
         $update->update(["exported" => 1]);

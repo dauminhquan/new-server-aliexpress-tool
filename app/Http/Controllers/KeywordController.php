@@ -192,7 +192,7 @@ class KeywordController extends Controller
     }
     public function page(Request $request,$id,$page)
     {
-        if($request->token == "n10JJg7XfBc4XWdbt9lw")
+        if($request->token == "N89B8uyqZd4c9icGslTe")
         {
             $keyword = Keyword::findOrFail($id);
             $keyword->page = $page;
