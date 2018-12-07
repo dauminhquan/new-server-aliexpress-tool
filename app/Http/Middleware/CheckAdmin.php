@@ -16,7 +16,7 @@ class CheckAdmin
      */
     public function handle($request, Closure $next)
     {
-        if(Auth::user()->type == 1)
+        if(Auth::user()->type == 1 || Auth::user()->type == 0)
         {
             return $next($request);
         }

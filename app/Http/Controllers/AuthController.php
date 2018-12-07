@@ -20,4 +20,8 @@ class AuthController extends Controller
         }
         return response()->redirectToRoute('login')->withErrors('Mật khẩu hoặc email không đúng');
     }
+    public function logout(){
+        Auth::logout();
+        return response()->redirectToRoute('login');
+    }
 }

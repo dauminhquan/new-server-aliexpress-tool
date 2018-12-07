@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Imports\UsersImport;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
@@ -16,7 +18,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $users = User::get();
+        $users = User::where("id","<>",Auth::user()->id)->where('type','>',1)->get();
         return view('users',['users' => $users]);
     }
 
@@ -41,6 +43,17 @@ class UserController extends Controller
         if($request->hasFile('file'))
         {
             Excel::import(new UsersImport(), $request->file('file'));
+        }
+        else{
+            if($request->has('email') && $request->has('name') && $request->has('password') && $request->has('type'))
+            {
+                $user = new User();
+                $user->email = $request->email;
+                $user->password = Hash::make($request->password);
+                $user->type = $request->type;
+                $user->name = $request->name;
+                $user->save();
+            }
         }
         return back();
     }

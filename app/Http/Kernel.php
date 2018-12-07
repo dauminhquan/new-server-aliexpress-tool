@@ -2,6 +2,8 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\CheckAdmin;
+use App\Http\Middleware\CheckDevelop;
 use App\Http\Middleware\CheckEmployeeExport;
 use App\Http\Middleware\CheckEmployeeSearch;
 use App\Http\Middleware\CheckLogin;
@@ -65,7 +67,9 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'check.login' => CheckLogin::class,
         'check.employee.search' => CheckEmployeeSearch::class,
-        'check.employee.export' => CheckEmployeeExport::class
+        'check.employee.export' => CheckEmployeeExport::class,
+        'check.admin' => CheckAdmin::class,
+        'check.develop' => CheckDevelop::class
     ];
 
     /**

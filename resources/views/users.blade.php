@@ -5,7 +5,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">×</button>
-                    <h5 class="modal-title">Thêm tài khoản</h5>
+                    <h5 class="modal-title">Thêm tài khoản bằng file xlsx</h5>
                 </div>
                 <form method="post" enctype="multipart/form-data">
                     <div class="modal-body">
@@ -15,6 +15,46 @@
                             <p>Vị trí trong file excel lân lượt phải là: <span class="text-warning">Tên nhân viên - Email - Mật khẩu - Loại tài khoản</span> ( 0 - Quản trị viên, 1 - Nhân viên tìm kiếm, 2 - Nhân viên Xuất Excel )</p>
                         </div>
 
+                    </div>
+                    @csrf
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Thêm mới</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="modal_form_add" class="modal fade" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h5 class="modal-title">Thêm tài khoản</h5>
+                </div>
+                <form method="post">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Tên</label>
+                            <input type="text" name="name" required class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" name="email" required class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Mật khẩu</label>
+                            <input type="password" name="password" required class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Loại tài khoản</label>
+                            <select name="type" class="select" id="">
+                                <option value="1">Admin</option>
+                                <option value="2">Nhân viên xuất Excel</option>
+                                <option value="3">Nhân viên tìm sản phẩm</option>
+
+                            </select>
+                        </div>
                     </div>
                     @csrf
                     <div class="modal-footer">
@@ -60,7 +100,10 @@
                 </div>
                 <div>
                     <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_vertical">
-                        Thêm mới <i class="icon-add position-right"></i>
+                        Thêm mới bằng Excel <i class="icon-file-excel position-right"></i>
+                    </button>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#modal_form_add">
+                        Thêm mới <i class="icon-plus3 position-right"></i>
                     </button>
                 </div>
             </div>
@@ -86,17 +129,13 @@
                             <td>{{$user->name}}</td>
                             <td>@switch($user->type)
                                     @case(1)
-                                    <span class="bg-white text-highlight">Quản trị</span>
+                                    <span class="bg-white text-highlight">Admin</span>
                                     @break
-                                    @case(1)
+                                    @case(3)
                                     <span class="bg-success text-highlight">Nhân viên tìm sản phẩm</span>
                                     @break
                                     @case(2)
                                     <span class="bg-danger text-highlight">Nhân viên xuất Excel</span>
-
-                                    @break
-                                    @case(3)
-                                    <span class="bg-brown-800 text-highlight">............</span>
                                     @break
                                 @endswitch</td>
                             <td>

@@ -4,7 +4,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Find Product</title>
+    <link href="{{asset('images/favicon.ico')}}" rel="shortcut icon" type="image/x-icon">
+    <title>Amazon Drop Shipping Team</title>
 
     <!-- Global stylesheets -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
@@ -151,7 +152,8 @@
                     </a>
 
                     <ul class="dropdown-menu dropdown-menu-right">
-                        <li><a href="#"><i class="icon-key"></i> Đổi mật khẩu</a></li>
+                        {{--<li><a href="#"><i class="icon-key"></i> Đổi mật khẩu</a></li>--}}
+                        <li><a href="{{route('logout')}}"><i class="icon-user-cancel"></i> Đăng xuất</a></li>
                     </ul>
                 </li>
             </ul>
@@ -193,18 +195,26 @@
                             <!-- Main -->
                             <li class="navigation-header"><span>Main</span> <i class="icon-menu" title="Main pages"></i></li>
                             <li><a href="{{route('home')}}"><i class="icon-home4"></i> <span>Dashboard</span></a></li>
-                            <li><a href="{{route('users.index')}}"><i class="icon-user"></i> <span>Quản lý nhân viên</span></a></li>
-                            <li><a href="{{route('keywords.index')}}"><i class="icon-search4"></i> <span>Từ khóa - Tìm sản phẩm</span></a></li>
-                            <li><a href="{{route('products.index')}}"><i class="icon-box"></i> <span>Quản lý sản phẩm</span></a></li>
-                            <li><a href="{{route('upcs.index')}}"><i class="icon-wrench"></i> <span>Mã UPC</span></a></li>
-                            <li><a href="{{route('templates.index')}}"><i class="icon-insert-template"></i> <span>Quản lý template - Xuất Excel</span></a></li>
-                            <li>
-                                <a href="#"><i class="icon-copy"></i> <span>Develop</span></a>
-                                <ul>
-                                    <li><a href="#" id="layout1">Quản lý các cột tại bảng</a></li>
-                                    <li><a href="{{route('servers.index')}}" id="layout1">Quản lý các server</a></li>
-                                </ul>
-                            </li>
+                            @if(\Illuminate\Support\Facades\Auth::user()->type == 1 || \Illuminate\Support\Facades\Auth::user()->type == 0)  <li><a href="{{route('users.index')}}"><i class="icon-user"></i> <span>Quản lý nhân viên</span></a></li> @endif
+                            @if(\Illuminate\Support\Facades\Auth::user()->type == 1 || \Illuminate\Support\Facades\Auth::user()->type == 0 || \Illuminate\Support\Facades\Auth::user()->type == 2)
+                                <li><a href="{{route('keywords.index')}}"><i class="icon-search4"></i> <span>Từ khóa - Tìm sản phẩm</span></a></li>
+                                <li><a href="{{route('products.index')}}"><i class="icon-box"></i> <span>Quản lý sản phẩm</span></a></li>
+                            @endif
+                            @if(\Illuminate\Support\Facades\Auth::user()->type == 1 || \Illuminate\Support\Facades\Auth::user()->type == 0 || \Illuminate\Support\Facades\Auth::user()->type == 3)
+                                <li><a href="{{route('upcs.index')}}"><i class="icon-wrench"></i> <span>Mã UPC</span></a></li>
+                                <li><a href="{{route('templates.index')}}"><i class="icon-insert-template"></i> <span>Quản lý template - Xuất Excel</span></a></li>
+                            @endif
+                            <?php /*dd(\Illuminate\Support\Facades\Auth::user()->id) */?>
+                            @if(\Illuminate\Support\Facades\Auth::user()->type == 0)
+                                <li>
+                                    <a href="#"><i class="icon-copy"></i> <span>Develop</span></a>
+                                    <ul>
+                                        <li><a href="#" id="layout1">Quản lý các cột tại bảng</a></li>
+                                        <li><a href="{{route('servers.index')}}" id="layout1">Quản lý các server</a></li>
+                                    </ul>
+
+                                </li>
+                            @endif
                         </ul>
                     </div>
                 </div>
@@ -238,9 +248,9 @@
             <!-- Content area -->
             <div class="content">
 
-                @section('body')
-                    @show
-                <!-- Footer -->
+            @section('body')
+            @show
+            <!-- Footer -->
                 <div class="footer text-muted">
                     &copy; 2015. <a href="#">Limitless Web App Kit</a> by <a href="http://themeforest.net/user/Kopyov" target="_blank">Eugene Kopyov</a>
                 </div>
@@ -258,6 +268,6 @@
 </div>
 <!-- /page container -->
 @section('script')
-    @show
+@show
 </body>
 </html>

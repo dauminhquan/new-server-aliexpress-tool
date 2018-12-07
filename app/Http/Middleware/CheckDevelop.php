@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 
-class CheckEmployeeExport
+class CheckDevelop
 {
     /**
      * Handle an incoming request.
@@ -16,7 +16,7 @@ class CheckEmployeeExport
      */
     public function handle($request, Closure $next)
     {
-        if(Auth::user()->type == 3 || Auth::user()->type == 1 || Auth::user()->type == 0)
+        if(Auth::user()->type == 0)
         {
             return $next($request);
         }
