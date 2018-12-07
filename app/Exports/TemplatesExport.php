@@ -26,12 +26,12 @@ class TemplatesExport implements FromCollection
         $data->orWhere('exported',"=",-3);
         $data->orWhere('exported',"=",-2);
         $data->orWhere('exported',"=",-1);
-        $data->orderBy('exported','asc');
+
         $update = DB::table($this->table)->where('exported','>',-1);
-        if($this->export_all == 0)
+        if($this->export_all == false)
         {
             $ids = $this->ids;
-            $data->where(function ($query) use ($ids){
+            $data->orWhere(function ($query) use ($ids){
                 foreach ($ids as $id)
                 {
                     $query->orWhere('item_sku',"=",$id);
@@ -44,6 +44,9 @@ class TemplatesExport implements FromCollection
                 }
             });
         }
+        $data->orderBy('exported','asc');
+//        dd($data->toSql());
+
         $data = $data->get();
         $count = 0;
         foreach ($data as $item)
