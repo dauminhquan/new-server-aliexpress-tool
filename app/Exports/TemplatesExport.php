@@ -28,7 +28,7 @@ class TemplatesExport implements FromCollection
         $data->orWhere('exported',"=",-1);
         $data->orderBy('exported','asc');
         $update = DB::table($this->table)->where('exported','>',-1);
-        if($this->export_all == false)
+        if($this->export_all == 0)
         {
             $ids = $this->ids;
             $data->where(function ($query) use ($ids){
@@ -63,11 +63,12 @@ class TemplatesExport implements FromCollection
             $delete->where(function($query) use (&$data,$upcs){
                 foreach ($data as $index => $item)
                 {
-                    if(!$item->parent_sku == null && !$item->parent_sku =="")
+                    if(!$item->parent_sku == null && !$item->parent_sku =="" && $item->exported > -1)
                     {
                         $item->external_product_id = $upcs[$index]->key;
                     }
                     $query->orWhere('id',"=",$upcs[$index]->id);
+                    unset($item->exported);
                 }
             });
             $delete->delete();
