@@ -27,7 +27,7 @@ class TemplatesExport implements FromCollection
         $data->orWhere('exported',"=",-2);
         $data->orWhere('exported',"=",-1);
         $data->orderBy('exported','asc');
-        $update = DB::table($this->table);
+        $update = DB::table($this->table)->where('exported','>',-1);
         if($this->export_all == false)
         {
             $ids = $this->ids;
@@ -45,8 +45,15 @@ class TemplatesExport implements FromCollection
             });
         }
         $data = $data->get();
-        $count = count($data);
-        $upcs = Upc::limit(count($data));
+        $count = 0;
+        foreach ($data as $item)
+        {
+            if($item->parent_sku == null || $item->parent_sku == "")
+            {
+                $count++;
+            }
+        }
+        $upcs = Upc::limit(count($data))->get();
         if(count($upcs) < $count)
         {
             dd("Khong du ma UPC");
@@ -56,7 +63,10 @@ class TemplatesExport implements FromCollection
             $delete->where(function($query) use (&$data,$upcs){
                 foreach ($data as $index => $item)
                 {
-                    $item->external_product_id = $upcs[$index]->key;
+                    if(!$item->parent_sku == null && !$item->parent_sku =="")
+                    {
+                        $item->external_product_id = $upcs[$index]->key;
+                    }
                     $query->orWhere('id',"=",$upcs[$index]->id);
                 }
             });
