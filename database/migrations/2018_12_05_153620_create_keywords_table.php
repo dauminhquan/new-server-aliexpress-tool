@@ -18,6 +18,7 @@ class CreateKeywordsTable extends Migration
             $table->string('keyword')->unique();
             $table->integer('page')->default(1);
             $table->integer('status')->default(0);
+            $table->string('url')->nullable();
             $table->integer('server_id')->nullable();
             $table->float('multiplication')->default(1.5);
             $table->timestamps();

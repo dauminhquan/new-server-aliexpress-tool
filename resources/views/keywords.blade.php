@@ -24,6 +24,37 @@
             </div>
         </div>
     </div>
+    <div id="modal_form_vertical_1" class="modal fade" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h5 class="modal-title">Thêm từ khóa</h5>
+                </div>
+                <form method="post" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Điền từ khóa</label>
+                            <input type="text" name="keyword" required class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Điền url (Nếu có)</label>
+                            <input type="text" name="url" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Điền page (Mặc định là 1)</label>
+                            <input type="number" min="1" step="1" name="page" value="1" required class="form-control">
+                        </div>
+                    </div>
+                    @csrf
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Thêm mới</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <div id="modal_theme_danger" class="modal fade" style="display: none;">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -35,7 +66,6 @@
                 <div class="modal-body">
                     <h6 class="text-semibold"> <input type="checkbox" name="delete_all"> <span class="text-warning">Xóa cả các sản phẩm được tìm từ từ khóa này</span></h6>
                     <p>Sau khi xóa toàn bộ dữ liệu có trong bảng excel này sẽ bị xóa hết!</p>
-
                 </div>
 
                 <div class="modal-footer">
@@ -124,7 +154,10 @@
                         </ul>
                     </div>
                     <div>
-                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_vertical">
+                        <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#modal_form_vertical">
+                            Thêm mới bằng file Excel <i class="icon-file-excel position-right"></i>
+                        </button>
+                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_vertical_1">
                             Thêm mới <i class="icon-add position-right"></i>
                         </button>
                     </div>
@@ -139,6 +172,8 @@
                             <th style="width: 10px"><input id="select-all" type="checkbox" ></th>
                             <th  style="width: 10px">ID</th>
                             <th>Từ khóa</th>
+                            <th>Trang</th>
+                            <th>Url</th>
                             <th>Server tìm kiếm</th>
                             <th>Trạng thái</th>
                             <th>Thao tác</th>
@@ -150,6 +185,8 @@
                                 <td  style="width: 10px"><input type="checkbox" value="{{$keyword->id}}" name="id_selected[]"></td>
                                 <td scope="row"  style="width: 10px">{{$keyword->id}}</td>
                                 <td>{{$keyword->keyword}}</td>
+                                <td>{{$keyword->page}}</td>
+                                <td><a href="{{$keyword->url}}">Url của keyword {{$keyword->keyword}}</a></td>
                                 <td>@if($keyword->server_id != null) {{$keyword->server->name }}@endif</td>
                                 <td>@switch($keyword->status)
                                         @case(0)

@@ -71,6 +71,16 @@ class KeywordController extends Controller
         {
             Excel::import(new KeywordsImport(), $request->file('file'));
         }
+        else{
+            if($request->has('keyword') && $request->has('page'))
+            {
+                $keyword = new Keyword();
+                $keyword->keyword = str_replace(' ','+',$request->keyword);
+                $keyword->page = $request->page;
+                $keyword->url = $request->url;
+                $keyword->save();
+            }
+        }
         return back();
     }
 
@@ -114,10 +124,19 @@ class KeywordController extends Controller
             $server = Server::findOrFail($request->server_id);
             $client = new Client();
             try{
-                $res = $client->request('GET', $server->root_url.'/search?query='.$keyword->keyword.'&page='.$keyword->page.'&multiplication='.$request->multiplication
-                .'&keyword_id='.$keyword->id.'&start=1&token=8ifOh3JKYCNg01I2K0PI'
+                if($keyword->url != null)
+                {
+                    $res = $client->request('GET', $server->root_url.'/search?query='.$keyword->keyword.'&page='.$keyword->page.'&multiplication='.$request->multiplication
+                        .'&keyword_id='.$keyword->id.'&start=1&token=8ifOh3JKYCNg01I2K0PI'.'&url='.$keyword->url
 
-                );
+                    );
+                }
+                else{
+                    $res = $client->request('GET', $server->root_url.'/search?query='.$keyword->keyword.'&page='.$keyword->page.'&multiplication='.$request->multiplication
+                        .'&keyword_id='.$keyword->id.'&start=1&token=8ifOh3JKYCNg01I2K0PI'
+
+                    );
+                }
             }catch (\Exception $exception)
             {
                 return response()->json([

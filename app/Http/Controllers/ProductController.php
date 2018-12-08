@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Keyword;
 use App\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,6 +18,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $default = ['item_name', 'item_sku', 'main_image_url'];
+        $keywords = Keyword::get();
         if ($request->column_selected != null)
         {
             $default  = $request->column_selected;
@@ -29,6 +31,10 @@ class ProductController extends Controller
             {
                 $products->orWhere(DB::raw('LOWER('.$column.')'),'LIKE','%'.strtolower($request->search).'%');
             }
+        }
+        if($request->keyword_id != null)
+        {
+            $products->where('keyword_id','=',$request->keyword_id);
         }
         if($request->has('show_parent'))
         {
@@ -47,7 +53,7 @@ class ProductController extends Controller
         else{
             $products = $products->paginate($request->limit);
         }
-        return view('products',['products' => $products,'columns' => $columns,'column_selected' => $default,'request' => $request]);
+        return view('products',['products' => $products,'columns' => $columns,'column_selected' => $default,'request' => $request,'keywords'=> $keywords]);
     }
 
     /**

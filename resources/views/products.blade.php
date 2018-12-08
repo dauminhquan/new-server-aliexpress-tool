@@ -20,6 +20,17 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="control-label col-lg-2">Từ khóa </label>
+                            <div class="col-lg-10">
+                                <select name="keyword_id" class="select" id="" data-placeholder="Hãy chọn 1 từ khóa để tìm kiếm">
+                                    <option value=""></option>
+                                    @foreach($keywords as $keyword)
+                                        <option value="{{$keyword->id}}" @if($request->keyword_id == $keyword->id) selected @endif>{{$keyword->keyword}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="control-label col-lg-2">Các cột hiển thị <span class="text-danger">*</span></label>
                             <div class="col-lg-10">
                                 <select name="column_selected[]" style="width: 100%" class="select" multiple>
