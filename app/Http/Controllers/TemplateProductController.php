@@ -142,6 +142,10 @@ class TemplateProductController extends Controller
                 $products->orWhere(DB::raw('LOWER('.$column.')'),'LIKE','%'.strtolower($request->search).'%');
             }
         }
+        if($request->keyword_id != null)
+        {
+            $products->where('keyword_id','=',$request->keyword_id);
+        }
         if(!in_array('id',$default))
         {
             $default = array_merge(['id'],$default);
