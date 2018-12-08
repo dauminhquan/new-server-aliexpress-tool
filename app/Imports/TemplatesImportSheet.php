@@ -47,6 +47,8 @@ class TemplatesImportSheet implements ToCollection
             }
             if(!$this->checkTemplate($columns))
             {
+                $template = Template::find('id_template');
+                $template->delete();
                 Schema::dropIfExists($this->name_template);
                 dd([
                     "message" => "Template Error"
@@ -108,6 +110,10 @@ class TemplatesImportSheet implements ToCollection
             DB::table($this->name_template)->insert($insert1);
             DB::table($this->name_template)->insert($insert2);
         }catch (\Exception $exception){
+            dd($exception);
+            $template = Template::find('id_template');
+            $template->delete();
+            dd($exception);
             Schema::dropIfExists($this->name_template);
             dd([
                 "message" => "Template Error"

@@ -15,7 +15,7 @@ class KeywordsImport implements ToModel
     public function model(array $row)
     {
         return new Keyword([
-            "keyword" => $row[0]
+            "keyword" => str_replace(' ','+',$row[0])
         ]);
     }
 }
