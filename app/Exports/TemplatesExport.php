@@ -49,6 +49,7 @@ class TemplatesExport implements FromCollection
 
         $data = $data->get();
         $count = 0;
+
         foreach ($data as $item)
         {
             if(($item->parent_sku == null || $item->parent_sku == "") && ($item->standard_price != null && $item->standard_price != ""))
@@ -67,7 +68,6 @@ class TemplatesExport implements FromCollection
             $delete->where(function($query) use (&$data,$upcs,&$indexUpc){
                 foreach ($data as $index => $item)
                 {
-
                     if(!$item->parent_sku == null && !$item->parent_sku =="" && $item->exported > -1 && ($item->parent_child == null || $item->parent_child != ""))
                     {
                         $item->external_product_id = $upcs[$indexUpc]->key;
@@ -81,6 +81,36 @@ class TemplatesExport implements FromCollection
             $delete->delete();
         }
         $update->update(["exported" => 1]);
+        /*$dataExport = [];
+        $head1 = DB::table($this->table)->where('exported',"=",-3);
+        $head2 = DB::table($this->table)->where('exported',"=",-2);
+        $head3 = DB::table($this->table)->where('exported',"=",-1);
+        unset($head1->exported);
+        unset($head2->exported);
+        unset($head3->exported);
+        $dataExport[] = $head1;
+        $dataExport[] = $head2;
+        $dataExport[] = $head3;
+        foreach ($data as $item)
+        {
+            if($item->parent_child == "" || $item->parent_child == null)
+            {
+                $dataExport[$item];
+            }
+            else if($item->parent_child == "Parent"){
+                $this->setChild($dataExport,$data,$item->item_sku);
+            }
+        }*/
         return $data;
+    }
+    private function setChild(&$dataExport,$data,$parent_sku)
+    {
+        foreach ($data as $item)
+        {
+            if($item->parent_sku == $parent_sku)
+            {
+                $dataExport[] = $item;
+            }
+        }
     }
 }

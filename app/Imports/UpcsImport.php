@@ -14,8 +14,13 @@ class UpcsImport implements ToModel
     */
     public function model(array $row)
     {
-        return new Upc([
-            "key" => $row[0]
-        ]);
+        $upc = Upc::where('key','=',$row[0])->first();
+        if($upc == null)
+        {
+            return new Upc([
+                "key" => $row[0]
+            ]);
+        }
+        return null;
     }
 }
