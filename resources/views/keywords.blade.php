@@ -176,6 +176,7 @@
                             <th>Url</th>
                             <th>Server tìm kiếm</th>
                             <th>Trạng thái</th>
+                            <th>Số sp tìm thấy</th>
                             <th>Thao tác</th>
                         </tr>
                         </thead>
@@ -205,6 +206,12 @@
 
 
                                     @endswitch</td>
+                                <td>
+                                    {{\App\Product::where('keyword_id','=',$keyword->id)->where(function($query){
+                                        $query->orWhereNull('parent_child');
+                                        $query->orWhere('parent_child','=','Parent');
+                                    })->count()}}
+                                </td>
                                 <td>
                                     <ul class="icons-list">
                                         <li><a href="#" class="btn btn-link"  data-toggle="modal" onclick="deleteId({{$keyword->id}})" data-target="#modal_theme_danger"   title="Xóa" data-original-title="Remove"><i class="icon-trash"></i></a></li>

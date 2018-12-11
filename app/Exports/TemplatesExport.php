@@ -77,7 +77,6 @@ class TemplatesExport implements FromCollection
                     unset($item->exported);
                 }
             });
-
             $delete->delete();
         }
         $update->update(["exported" => 1]);
