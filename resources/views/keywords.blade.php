@@ -58,25 +58,27 @@
     <div id="modal_theme_danger" class="modal fade" style="display: none;">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header bg-danger">
-                    <button type="button" class="close" data-dismiss="modal">×</button>
-                    <h6 class="modal-title"><span class="icon-warning22"></span> Lưu ý</h6>
-                </div>
+                <form id="delete-form" method="post">
+                    <div class="modal-header bg-danger">
+                        <button type="button" class="close" data-dismiss="modal">×</button>
+                        <h6 class="modal-title"><span class="icon-warning22"></span> Lưu ý</h6>
+                    </div>
 
-                <div class="modal-body">
-                    <h6 class="text-semibold"> <input type="checkbox" name="delete_all"> <span class="text-warning">Xóa cả các sản phẩm được tìm từ từ khóa này</span></h6>
-                    <p>Sau khi xóa toàn bộ dữ liệu có trong bảng excel này sẽ bị xóa hết!</p>
-                </div>
+                    <div class="modal-body">
+                        <h6 class="text-semibold"> <input type="checkbox" name="delete_all"> <span class="text-warning">Xóa cả các sản phẩm được tìm từ từ khóa này</span></h6>
+                        <p>Sau khi xóa toàn bộ dữ liệu có trong bảng excel này sẽ bị xóa hết!</p>
+                    </div>
 
-                <div class="modal-footer">
-                    <form id="delete-form" method="post">
-                        <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
-                        @method("delete")
-                        @csrf
-                        <button type="submit" class="btn btn-danger">Xóa</button>
-                    </form>
+                    <div class="modal-footer">
 
-                </div>
+                            <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+                            @method("delete")
+                            @csrf
+                            <button type="submit" class="btn btn-danger">Xóa</button>
+
+
+                    </div>
+                </form>
             </div>
         </div>
     </div>
