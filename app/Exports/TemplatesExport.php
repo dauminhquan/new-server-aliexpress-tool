@@ -68,7 +68,7 @@ class TemplatesExport implements FromCollection
             $delete->where(function($query) use (&$data,$upcs,&$indexUpc){
                 foreach ($data as $index => $item)
                 {
-                    if(!$item->parent_sku == null && !$item->parent_sku =="" && $item->exported > -1 && ($item->parent_child == null || $item->parent_child != ""))
+                    if($item->standard_price != null && $item->standard_price != "" && $item->exported > -1)
                     {
                         $item->external_product_id = $upcs[$indexUpc]->key;
                         $query->orWhere('id',"=",$upcs[$indexUpc]->id);
