@@ -198,7 +198,7 @@
                 if($(this).val() == "export-excel")
                 {
                     $("#export_all").show()
-                    $("#export_all input").prop('checked',true)
+                    // $("#export_all input").prop('checked',true)
                 }
                 else{
                     $("#export_all").hide()

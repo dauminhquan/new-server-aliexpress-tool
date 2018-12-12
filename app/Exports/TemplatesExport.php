@@ -22,7 +22,7 @@ class TemplatesExport implements FromCollection
     public function collection()
     {
 
-        $data = DB::table($this->table)->where('exported',"=",0);
+        $data = DB::table($this->table);
         $data->orWhere('exported',"=",-3);
         $data->orWhere('exported',"=",-2);
         $data->orWhere('exported',"=",-1);
@@ -32,20 +32,29 @@ class TemplatesExport implements FromCollection
         {
             $ids = $this->ids;
             $data->orWhere(function ($query) use ($ids){
-                foreach ($ids as $id)
-                {
-                    $query->orWhere('item_sku',"=",$id);
-                }
+                $query->where('exported',"=",0);
+                $query->where(function ($query2) use ($ids){
+                    foreach ($ids as $id)
+                    {
+                        $query2->orWhere('item_sku',"=",$id);
+                        $query2->orWhere('parent_sku','=',$id);
+                    }
+                });
+
             });
             $update->where(function ($query) use ($ids){
-                foreach ($ids as $id)
-                {
-                    $query->orWhere('item_sku',"=",$id);
-                }
+                $query->where('exported',"=",0);
+                $query->where(function ($query2) use ($ids){
+                    foreach ($ids as $id)
+                    {
+                        $query2->orWhere('item_sku',"=",$id);
+                        $query2->orWhere('parent_sku','=',$id);
+                    }
+                });
+
             });
         }
         $data->orderBy('exported','asc');
-//        dd($data->toSql());
 
         $data = $data->get();
         $count = 0;
