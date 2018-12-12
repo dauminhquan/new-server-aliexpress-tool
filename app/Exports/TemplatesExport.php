@@ -54,6 +54,9 @@ class TemplatesExport implements FromCollection
 
             });
         }
+        else{
+            $data->orWhere('exported','=',0);
+        }
         $data->orderBy('exported','asc');
 
         $data = $data->get();
@@ -86,6 +89,7 @@ class TemplatesExport implements FromCollection
                     unset($item->exported);
                 }
             });
+//            dd($delete->toSql());
             $delete->delete();
         }
         $update->update(["exported" => 1]);
